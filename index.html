@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html ng-app="studentApp">
+<head>
+  <meta charset="UTF-8">
+  <title>Enhanced Student List App</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <style>
+    body { font-family: Arial; padding: 20px; max-width: 600px; margin: auto; }
+    input, button { padding: 8px; margin: 5px 0; width: 100%; }
+    ul { list-style-type: none; padding: 0; }
+    li { background: #f4f4f4; margin: 5px 0; padding: 8px; border-radius: 5px; }
+    .success { color: green; font-size: 14px; margin-top: 10px; }
+    .header { font-size: 24px; font-weight: bold; margin-bottom: 15px; }
+  </style>
+</head>
+<body>
+
+  <div ng-controller="StudentController">
+    <div class="header">📘 My Student Manager</div>
+
+    <label>Student Name:</label>
+    <input type="text" ng-model="newStudentName" placeholder="Enter student name">
+
+    <label>Roll Number:</label>
+    <input type="number" ng-model="newStudentRoll" placeholder="Enter roll number">
+
+    <button ng-click="addStudent()">Add Student</button>
+
+    <div class="success" ng-show="message">{{ message }}</div>
+
+    <hr>
+
+    <label>🔍 Search by name:</label>
+    <input type="text" ng-model="searchText" placeholder="Type to search...">
+
+    <p><strong>Total Students:</strong> {{ students.length }}</p>
+
+    <ul>
+      <li ng-repeat="student in students | filter:searchText">
+        {{ student.roll }} - {{ student.name }}
+        <button ng-click="removeStudent($index)" style="float: right;">❌</button>
+      </li>
+    </ul>
+  </div>
+
+  <script>
+    var app = angular.module('studentApp', []);
+
+    app.controller('StudentController', function($scope, $timeout) {
+      $scope.students = [
+        { name: 'Ravi', roll: 101 },
+        { name: 'Sneha', roll: 102 }
+      ];
+
+      $scope.newStudentName = '';
+      $scope.newStudentRoll = '';
+      $scope.message = '';
+
+      $scope.addStudent = function() {
+        if ($scope.newStudentName && $scope.newStudentRoll) {
+          $scope.students.push({
+            name: $scope.newStudentName,
+            roll: $scope.newStudentRoll
+          });
+          $scope.message = '✅ Student added successfully!';
+          $timeout(function() {
+            $scope.message = '';
+          }, 2000);
+          $scope.newStudentName = '';
+          $scope.newStudentRoll = '';
+        }
+      };
+
+      $scope.removeStudent = function(index) {
+        $scope.students.splice(index, 1);
+      };
+    });
+  </script>
+
+</body>
+</html>
